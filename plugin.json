@@ -1,0 +1,15 @@
+{
+    "name": "Conversation Emotions",
+    "url": "https://github.com/AndrMoura/plugin-test",
+    "description": "Get user and agent most frequent emotions in a conversation",
+    "main": "index.js",
+    "config": [
+        {
+            "key": "HOST_URL",
+            "name": "HOSTNAME URL",
+            "type": "string",
+            "default": "c3h73f9b-9612.uks1.devtunnels.ms",
+            "required": true
+        }
+    ]
+}
