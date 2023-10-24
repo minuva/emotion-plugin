@@ -82,11 +82,14 @@ async function processEvent(event, { config, cache }) {
 
     console.log("res", res)
     for (const key in res) {
+      console.log("key", key)
+      console.log("res[key]", res[key])
       if (res.hasOwnProperty(key)) {
+            console.log("key_entered", key)
             event.properties[key] = res[key]; 
         }
     }
-
+    console.log("event.properties", event.properties)
     return event;
 }
 
