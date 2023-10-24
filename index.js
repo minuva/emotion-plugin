@@ -80,6 +80,7 @@ async function processEvent(event, { config, cache }) {
 
     res = await makePostRequest(fullUrl, textRoles);
 
+    print("res", res)
     for (const key in res) {
       if (res.hasOwnProperty(key)) {
             event.properties[key] = res[key]; 
