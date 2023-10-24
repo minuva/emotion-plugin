@@ -82,7 +82,9 @@ async function processEvent(event, { config, cache }) {
 
     console.log("res", res)
     for (const key in res) {
-        event.properties[key] = res[key]; 
+        if (res[key]!== '') {
+          event.properties[key] = res[key];
+        }
     }
     console.log("event.properties", event.properties)
     return event;
