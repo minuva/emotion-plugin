@@ -52,7 +52,7 @@ async function splitDialogText(dialog_text) {
 
 async function processEvent(event, { config, cache }) {
 
-    const httpString = "http://";
+    const httpString = "https://";
     const hostUrl = config.HOST_URL;
     const path = '/conversation_emotions';
 
@@ -82,7 +82,7 @@ async function processEvent(event, { config, cache }) {
 
     console.log("res", res)
     for (const key in res) {
-        if (res[key]!== '') {
+        if (res[key] !== '') {
           event.properties[key] = res[key];
         }
     }
