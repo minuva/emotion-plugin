@@ -79,8 +79,8 @@ async function processEvent(event, { config, cache }) {
     }
 
     const res = await makePostRequest(fullUrl, textRoles);
-
-    console.log("res", res)
+    
+    console.log("hosturl", hostUrl)
     for (const key in res) {
         if (res[key] !== '') {
           event.properties[key] = res[key];
