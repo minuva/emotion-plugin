@@ -8,6 +8,26 @@ async function setupPlugin({ config }) {
 
 }
 
+async function retriableMakePostRequest(url, data, retryCount = 3, retryDelay = 1000) {
+  let retryNumber = 0;
+  while (retryNumber < retryCount) {
+    try {
+      const response = await makePostRequest(url, data);
+      return response;
+    } catch (error) {
+      retryNumber++;
+      console.error("Error:", error);
+      console.log(`Retrying post request ${retryNumber} out of ${retryCount}.`);
+
+      // Wait for the specified retry delay before retrying the request.
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+  }
+
+  // If the request failed after all retries, throw an error.
+  throw new Error("Failed to make post request after all retries.");
+}
+
 async function makePostRequest(url, data) {
     try {
       const response = await fetch(url, {
@@ -78,7 +98,7 @@ async function processEvent(event, { config, cache }) {
         textRoles.push({ text: agentUtterance, role: ROLE_AGENT });
     }
 
-    const res = await makePostRequest(fullUrl, textRoles);
+    const res = await retriableMakePostRequest(fullUrl, textRoles);
     
     console.log("hosturl", hostUrl)
     for (const key in res) {
