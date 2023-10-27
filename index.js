@@ -52,7 +52,7 @@ async function splitDialogText(dialog_text) {
 
 async function processEvent(event, { config, cache }) {
 
-    const httpString = "https://";
+    const httpString = "http://";
     const hostUrl = config.HOST_URL;
     const path = '/conversation_emotions';
 
