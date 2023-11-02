@@ -1,7 +1,5 @@
 /* global module */
 /* eslint no-undef: "error" */
-const ROLE_USER = 'user';
-const ROLE_AGENT = 'agent';
 
 // Plugin method that runs on plugin load
 async function setupPlugin({ config }) {
@@ -33,22 +31,7 @@ async function makePostRequest(url, data) {
     }
 }
 
-async function splitDialogText(dialog_text) {
-    
-    const userPattern = /user:(.*?)(?=(agent:|$))/gs;
-    const agentPattern = /((?:agent|system):.*?(?=(?:agent:|user:|$)))/gs;
 
-    const userMatches = dialog_text.matchAll(userPattern);
-    const agentMatches = dialog_text.matchAll(agentPattern);
-
-    const cleanAndTrim = (utterance) => utterance.replace(/^(user|agent|system):/, '').trim();
-
-    const userUtterances = [...userMatches].map(match => cleanAndTrim(match[1]));
-    const agentUtterances = [...agentMatches].map(match => cleanAndTrim(match[1]));
-    
-    return { user: userUtterances, agent: agentUtterances };
-
-}
 
 async function processEvent(event, { config, cache }) {
 
@@ -61,24 +44,13 @@ async function processEvent(event, { config, cache }) {
         event.properties = {};
     }
 
-    if (!event.properties['text']) {
+    if (!event.properties['$dialog']) {
         return event
     }
 
-    const dialog = event.properties['text']
-    const utterances = await splitDialogText(dialog);
-
-    // Get conversation toxicity
-    const textRoles = [];
-    for (const userUtterance of utterances.user) {
-        textRoles.push({ text: userUtterance, role: ROLE_USER });
-    }
-
-    for (const agentUtterance of utterances.agent) {
-        textRoles.push({ text: agentUtterance, role: ROLE_AGENT });
-    }
-
-    const res = await makePostRequest(fullUrl, textRoles);
+    var dialog = event.properties['$dialog']
+    dialog = JSON.parse(dialog);
+    const res = await makePostRequest(fullUrl, dialog);
 
     console.log("res", res)
     for (const key in res) {
