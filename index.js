@@ -52,7 +52,6 @@ async function processEvent(event, { config, cache }) {
     dialog = JSON.parse(dialog);
     const res = await makePostRequest(fullUrl, dialog);
 
-    console.log("res", res)
     for (const key in res) {
         if (res[key] !== '') {
           event.properties[key] = res[key];
