@@ -35,7 +35,7 @@ async function makePostRequest(url, data) {
 
 async function processEvent(event, { config, cache }) {
 
-    const httpString = "http://";
+    const httpString = "https://";
     const hostUrl = config.HOST_URL;
     const path = '/conversation_emotions';
 
