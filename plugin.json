@@ -8,7 +8,7 @@
             "key": "HOST_URL",
             "name": "HOSTNAME URL",
             "type": "string",
-            "default": "c3h73f9b-9612.uks1.devtunnels.ms",
+            "default": "https://dodo-promoted-roughy.ngrok-free.app/conversation_toxicity",
             "required": true
         }
     ]
