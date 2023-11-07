@@ -58,7 +58,6 @@ async function processEvent(event, { config, cache }) {
           event.properties[key] = res[key];
         }
     }
-    console.log("event.properties", event.properties)
     return event;
 }
 
