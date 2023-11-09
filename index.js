@@ -84,7 +84,7 @@ async function processEvent(event, { config, cache }) {
 
     const path = 'conversation_emotions';
     let fullUrl = '';
-    let API_SERVER_URL = config.API_SERVER_URL;
+    const API_SERVER_URL = config.API_SERVER_URL;
     console.log(API_SERVER_URL)
     if (isValidURL(API_SERVER_URL)) {
       const server_url = API_SERVER_URL.endsWith('/')? API_SERVER_URL : API_SERVER_URL + '/';
