@@ -6,6 +6,52 @@ async function setupPlugin({ config }) {
 
 }
 
+function isValidURL(url) {
+  try {
+    const urlObject = new URL(url);
+
+    // Check if the protocol is either http or https and contains double slash
+    const isHttpOrHttps = /^https?:\/\/.*/.test(url);
+
+    // Check if the hostname is an IP address or localhost
+    const isIPAddress = /^(\d{1,3}\.){3}\d{1,3}$/.test(urlObject.hostname);
+    const isLocalhost = urlObject.hostname === 'localhost';
+
+    // Check if the hostname is a valid domain name
+    const isValidDomain = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/.test(urlObject.hostname);
+
+    // If the protocol is not http or https, return false
+    if (!isHttpOrHttps) {
+      return false;
+    }
+
+    // If the hostname is an IP address or localhost, the port must be present
+    if ((isIPAddress || isLocalhost) && !urlObject.port) {
+      return false;
+    }
+
+    // If the hostname is not a valid domain name, IP address, or localhost, return false
+    if (!isValidDomain && !isIPAddress && !isLocalhost) {
+      return false;
+    }
+
+    // Check if the hostname ends with a double quote
+    if (urlObject.hostname.endsWith('"')) {
+      return false;
+    }
+
+    // Check if the path contains a double slash
+    if (urlObject.pathname.includes('//')) {
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    // Return false if the URL is not valid
+    return false;
+  }
+}
+
 async function makePostRequest(url, data) {
   try {
     const response = await fetch(url, {
@@ -27,7 +73,7 @@ async function makePostRequest(url, data) {
       throw new Error("Request failed with status code " + response.status);
     }
   } catch (error) {
-    console.error("Error:", error);
+      console.error("Error:", error);
     throw error; 
   }
 }
@@ -36,11 +82,18 @@ async function makePostRequest(url, data) {
 
 async function processEvent(event, { config, cache }) {
 
-    const httpString = config.HTTP_HTTPS + "://"
-    const hostUrl = config.HOST_URL;
-    const path = '/conversation_emotions';
-
-    const fullUrl = httpString + hostUrl + path;
+    const path = 'conversation_emotions';
+    let fullUrl = '';
+    if (isValidURL(config.API_SERVER_URL)) {
+      const API_SERVER_URL = API_SERVER_URL.endsWith('/')? API_SERVER_URL : API_SERVER_URL + '/';
+      fullUrl = API_SERVER_URL + path;
+    }
+    else
+    {
+      console.error('API_SERVER_URL is not a valid URL');
+      throw new Error('API_SERVER_URL is not a valid URL');
+    }
+    
     if (!event.properties) {
         event.properties = {};
     }
