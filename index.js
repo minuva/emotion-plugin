@@ -102,7 +102,7 @@ async function processEvent(event, { config, cache }) {
 
     if (!event.properties['$dialog'] || event.properties['user_emotion'] || event.properties['agent_emotion']) {
       return event;
-  } 
+    } 
 
     var dialog = event.properties['$dialog']
     dialog = JSON.parse(dialog);
