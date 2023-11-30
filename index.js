@@ -99,10 +99,23 @@ async function processEvent(event, { config, cache }) {
     if (!event.properties) {
         event.properties = {};
     }
+    
+    if (!event.properties['$dialog']){
+      return event
+    }
 
-    if (!event.properties['$dialog'] || event.properties['user_emotion'] || event.properties['agent_emotion']) {
+    if (
+      event.properties['user_emotion'] !== undefined ||
+      event.properties['agent_emotion'] !== undefined
+    ) {
+
+      for (const prop of ['user_emotion', 'agent_emotion']) {
+        if (event.properties[prop] === '') {
+          delete event.properties[prop];
+        }
+      }
       return event;
-    } 
+    }
 
     var dialog = event.properties['$dialog']
     dialog = JSON.parse(dialog);
