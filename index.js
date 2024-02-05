@@ -6,6 +6,49 @@ async function setupPlugin({ config }) {
 
 }
 
+async function makePostRequest(url, data, token) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Accept": "*/*",
+        "token": token
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.status === 200) {
+      const responseData = await response.json();
+      return responseData;
+    } else {
+      console.error("Request code " + response.status);
+      throw new Error("Request failed with status code " + response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; 
+  }
+}
+
+function GetToken(token) {
+
+    let DEFAULT_TOKEN = process.env.AUTH_TOKEN_PLUGIN;
+  
+    if (token) {
+        return token;
+    }
+    else if (DEFAULT_TOKEN) {
+        return DEFAULT_TOKEN;
+    }
+    else {
+        console.error('AUTH_TOKEN_PLUGIN is not set');
+        throw new Error('AUTH_TOKEN_PLUGIN is not set');
+    }
+}
+
 function isValidURL(url) {
   try {
     const urlObject = new URL(url);
@@ -52,40 +95,16 @@ function isValidURL(url) {
   }
 }
 
-async function makePostRequest(url, data) {
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        "Accept": "*/*",
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (response.status === 200) {
-      const responseData = await response.json();
-      return responseData;
-    } else {
-      console.error("Request code " + response.status);
-      throw new Error("Request failed with status code " + response.status);
-    }
-  } catch (error) {
-      console.error("Error:", error);
-    throw error; 
-  }
-}
 
 
 
 async function processEvent(event, { config, cache }) {
 
-    const path = 'conversation_emotions';
+    const path = 'conversation_flow';
     let fullUrl = '';
-    const API_SERVER_URL = config.API_SERVER_URL;
-    console.log(API_SERVER_URL)
+    let API_SERVER_URL = config.API_SERVER_URL;
+    let token = GetToken(config.API_KEY);
+
     if (isValidURL(API_SERVER_URL)) {
       const server_url = API_SERVER_URL.endsWith('/')? API_SERVER_URL : API_SERVER_URL + '/';
       fullUrl = server_url + path;
@@ -119,7 +138,7 @@ async function processEvent(event, { config, cache }) {
 
     var dialog = event.properties['$dialog']
     dialog = JSON.parse(dialog);
-    const res = await makePostRequest(fullUrl, dialog);
+    const res = await makePostRequest(fullUrl, dialog, token);
 
     for (const key in res) {
         if (res[key] !== '') {
