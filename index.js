@@ -100,7 +100,7 @@ function isValidURL(url) {
 
 async function processEvent(event, { config, cache }) {
 
-    const path = 'conversation_flow';
+    const path = 'conversation_emotions_plugin';
     let fullUrl = '';
     let API_SERVER_URL = config.API_SERVER_URL;
     let token = GetToken(config.API_KEY);
